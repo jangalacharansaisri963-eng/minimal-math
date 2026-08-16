@@ -71,7 +71,13 @@ android {
 }
 
 chaquopy {
-    sourceSets["main"].python.srcDir("src/main/python")
+    productFlavors {
+        create("main") {
+            sourceSets.getByName("main") {
+                srcDir("src/main/python")
+            }
+        }
+    }
 }
 
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
