@@ -10,21 +10,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-enum class AngleMode { DEG, RAD }
-
-data class CalculatorState(
-    val expression: String = "",
-    val previewResult: String? = null, // was result
-    val errorMessage: String? = null,  // was isError
-    val angleMode: AngleMode = AngleMode.DEG,
-    val isExtraFunctionsOpen: Boolean = false,
-    val isTerminalOpen: Boolean = false,
-    val isUnitConverterOpen: Boolean = false,
-    val isHistoryOpen: Boolean = false,
-    val history: List<String> = emptyList(),
-    val hasMemory: Boolean = false
-)
-
 class CalculatorViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(CalculatorState())
@@ -32,24 +17,46 @@ class CalculatorViewModel : ViewModel() {
 
     fun onAction(action: CalculatorAction) { // Screen calls this
         when (action) {
+            // UI Toggles
             CalculatorAction.ToggleAngleMode -> toggleAngleMode()
             CalculatorAction.ToggleTerminal -> _state.update { it.copy(isTerminalOpen = !it.isTerminalOpen) }
             CalculatorAction.ToggleUnitConverter -> _state.update { it.copy(isUnitConverterOpen = !it.isUnitConverterOpen) }
             CalculatorAction.ToggleHistory -> _state.update { it.copy(isHistoryOpen = !it.isHistoryOpen) }
             CalculatorAction.ToggleExtraFunctions -> _state.update { it.copy(isExtraFunctionsOpen = !it.isExtraFunctionsOpen) }
+            CalculatorAction.ToggleSecondMode -> _state.update { it.copy(isSecondMode = !it.isSecondMode) }
+            
+            // History
             CalculatorAction.ClearHistory -> _state.update { it.copy(history = emptyList()) }
-            is CalculatorAction.SelectHistory -> _state.update { it.copy(expression = action.expr) }
-            CalculatorAction.MemoryClear -> _state.update { it.copy(hasMemory = false) }
-            CalculatorAction.MemoryAdd -> _state.update { it.copy(hasMemory = true) }
-            CalculatorAction.MemorySubtract -> _state.update { it.copy(hasMemory = true) }
-            CalculatorAction.MemoryRecall -> {} // implement later
+            is CalculatorAction.SelectHistory -> _state.update { it.copy(expression = action.history.expression) }
+            
+            // Memory
+            CalculatorAction.MemoryClear -> _state.update { it.copy(hasMemory = false, memory = BigDecimal.ZERO) }
+            CalculatorAction.MemoryAdd -> addToMemory()
+            CalculatorAction.MemorySubtract -> subtractFromMemory()
+            CalculatorAction.MemoryRecall -> recallMemory()
+            
+            // TODO: Wire these up to your existing keypad logic
+            is CalculatorAction.Number -> append(action.digit.toString())
+            CalculatorAction.Decimal -> append(".")
+            is CalculatorAction.Operator -> append(action.op.symbol)
+            is CalculatorAction.ScientificFunc -> append(action.func.symbol + "(")
+            is CalculatorAction.Constant -> append(action.constVal.symbol)
+            CalculatorAction.OpenParenthesis -> append("(")
+            CalculatorAction.CloseParenthesis -> append(")")
+            CalculatorAction.Equals -> evaluate()
+            CalculatorAction.Clear -> clear()
+            CalculatorAction.AllClear -> allClear()
+            CalculatorAction.Backspace -> delete()
+            CalculatorAction.ToggleSign -> toggleSign()
+            CalculatorAction.Percentage -> percentage()
         }
     }
 
-    // Keep your old function too for the keypad
+    // Keep your old function too for the keypad during migration
     fun onButtonClick(button: String) {
         when (button) {
-            "AC" -> clear()
+            "AC" -> allClear()
+            "C" -> clear()
             "DEL" -> delete()
             "=" -> evaluate()
             else -> append(button)
@@ -67,7 +74,35 @@ class CalculatorViewModel : ViewModel() {
     }
 
     private fun clear() {
+        _state.update { it.copy(expression = "", previewResult = null, errorMessage = null) }
+    }
+
+    private fun allClear() {
         _state.update { CalculatorState(angleMode = it.angleMode) }
+    }
+
+    private fun toggleSign() {
+        // TODO: implement
+    }
+
+    private fun percentage() {
+        // TODO: implement
+    }
+
+    private fun addToMemory() {
+        _state.value.previewResult?.toBigDecimalOrNull()?.let { result ->
+            _state.update { it.copy(memory = it.memory + result, hasMemory = true) }
+        }
+    }
+
+    private fun subtractFromMemory() {
+        _state.value.previewResult?.toBigDecimalOrNull()?.let { result ->
+            _state.update { it.copy(memory = it.memory - result, hasMemory = true) }
+        }
+    }
+
+    private fun recallMemory() {
+        _state.update { it.copy(expression = it.expression + it.memory.toPlainString()) }
     }
 
     private fun toggleAngleMode() {
@@ -83,11 +118,17 @@ class CalculatorViewModel : ViewModel() {
         viewModelScope.launch {
             evaluateViaPython(expr, _state.value.angleMode)
                 .onSuccess { result ->
+                    val newHistoryItem = CalculationHistory(
+                        expression = expr,
+                        result = formatResult(result)
+                    )
                     _state.update { 
                         it.copy(
-                            previewResult = formatResult(result), // FIXED
+                            previewResult = formatResult(result),
                             expression = formatResult(result),
-                            errorMessage = null // FIXED
+                            errorMessage = null,
+                            history = it.history + newHistoryItem,
+                            isCalculated = true
                         ) 
                     }
                 }
@@ -95,7 +136,8 @@ class CalculatorViewModel : ViewModel() {
                     _state.update { 
                         it.copy(
                             previewResult = null,
-                            errorMessage = "Error: ${e.message}" // FIXED
+                            errorMessage = "Error: ${e.message}",
+                            isCalculated = false
                         ) 
                     }
                 }
@@ -116,19 +158,4 @@ class CalculatorViewModel : ViewModel() {
     private fun formatResult(value: BigDecimal): String {
         return value.stripTrailingZeros().toPlainString()
     }
-}
-
-// ADD THIS: Screen is calling this sealed class
-sealed class CalculatorAction {
-    data object ToggleAngleMode : CalculatorAction()
-    data object ToggleTerminal : CalculatorAction()
-    data object ToggleUnitConverter : CalculatorAction()
-    data object ToggleHistory : CalculatorAction()
-    data object ToggleExtraFunctions : CalculatorAction()
-    data object ClearHistory : CalculatorAction()
-    data object MemoryClear : CalculatorAction()
-    data object MemoryAdd : CalculatorAction()
-    data object MemorySubtract : CalculatorAction()
-    data object MemoryRecall : CalculatorAction()
-    data class SelectHistory(val expr: String) : CalculatorAction()
 }
