@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ADD THIS LINE: for Chaquopy -->
     <application
-        android:name=".CalcApplication"  <!-- ADD THIS LINE -->
+        android:name=".CalcApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
