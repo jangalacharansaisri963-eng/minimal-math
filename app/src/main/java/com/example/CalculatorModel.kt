@@ -30,31 +30,31 @@ data class CalculatorState(
 )
 
 sealed class CalculatorAction {
-  data class Number(val digit: Int) : CalculatorAction
-  data object Decimal : CalculatorAction
-  data class Operator(val op: CalculatorOp) : CalculatorAction
-  data class ScientificFunc(val func: ScientificFunction) : CalculatorAction
-  data class Constant(val constVal: MathConstant) : CalculatorAction
-  data object OpenParenthesis : CalculatorAction
-  data object CloseParenthesis : CalculatorAction
-  data object Equals : CalculatorAction
-  data object Clear : CalculatorAction
-  data object AllClear : CalculatorAction
-  data object Backspace : CalculatorAction
-  data object ToggleSign : CalculatorAction
-  data object Percentage : CalculatorAction
-  data object ToggleSecondMode : CalculatorAction
-  data object ToggleAngleMode : CalculatorAction
-  data object ToggleExtraFunctions : CalculatorAction
-  data object MemoryClear : CalculatorAction
-  data object MemoryRecall : CalculatorAction
-  data object MemoryAdd : CalculatorAction
-  data object MemorySubtract : CalculatorAction
-  data class SelectHistory(val history: CalculationHistory) : CalculatorAction
-  data object ToggleHistory : CalculatorAction
-  data object ClearHistory : CalculatorAction
-  data object ToggleUnitConverter : CalculatorAction
-  data object ToggleTerminal : CalculatorAction
+  data class Number(val digit: Int) : CalculatorAction() // <-- ADDED ()
+  data object Decimal : CalculatorAction() // <-- ADDED ()
+  data class Operator(val op: CalculatorOp) : CalculatorAction() // <-- ADDED ()
+  data class ScientificFunc(val func: ScientificFunction) : CalculatorAction() // <-- ADDED ()
+  data class Constant(val constVal: MathConstant) : CalculatorAction() // <-- ADDED ()
+  data object OpenParenthesis : CalculatorAction() // <-- ADDED ()
+  data object CloseParenthesis : CalculatorAction() // <-- ADDED ()
+  data object Equals : CalculatorAction() // <-- ADDED ()
+  data object Clear : CalculatorAction() // <-- ADDED ()
+  data object AllClear : CalculatorAction() // <-- ADDED ()
+  data object Backspace : CalculatorAction() // <-- ADDED ()
+  data object ToggleSign : CalculatorAction() // <-- ADDED ()
+  data object Percentage : CalculatorAction() // <-- ADDED ()
+  data object ToggleSecondMode : CalculatorAction() // <-- ADDED ()
+  data object ToggleAngleMode : CalculatorAction() // <-- ADDED ()
+  data object ToggleExtraFunctions : CalculatorAction() // <-- ADDED ()
+  data object MemoryClear : CalculatorAction() // <-- ADDED ()
+  data object MemoryRecall : CalculatorAction() // <-- ADDED ()
+  data object MemoryAdd : CalculatorAction() // <-- ADDED ()
+  data object MemorySubtract : CalculatorAction() // <-- ADDED ()
+  data class SelectHistory(val history: CalculationHistory) : CalculatorAction() // <-- ADDED ()
+  data object ToggleHistory : CalculatorAction() // <-- ADDED ()
+  data object ClearHistory : CalculatorAction() // <-- ADDED ()
+  data object ToggleUnitConverter : CalculatorAction() // <-- ADDED ()
+  data object ToggleTerminal : CalculatorAction() // <-- ADDED ()
 }
 
 enum class CalculatorOp(val symbol: String, val precedence: Int) {
