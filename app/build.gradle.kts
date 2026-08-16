@@ -83,7 +83,6 @@ chaquopy {
       }
     }
   }
-  buildPython("/usr/bin/python3")
 }
 
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
