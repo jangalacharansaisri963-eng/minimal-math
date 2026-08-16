@@ -71,8 +71,8 @@ android {
 }
 
 chaquopy {
-    sourceSets {
-        "main" {
+    productFlavors {
+        getByName("main") {
             python {
                 srcDir("src/main/python")
             }
