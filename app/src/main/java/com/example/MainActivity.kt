@@ -12,12 +12,11 @@ import com.chaquo.python.android.AndroidPlatform
 import com.example.ui.theme.CalculatorTheme
 
 class MainActivity : ComponentActivity() {
-  private val viewModel: CalculatorViewModel by viewModels()
+  private val viewModel: CalculatorViewModel by viewModels<CalculatorViewModel>() // FIXED
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     
-    // Initialize Chaquopy Python Android Platform safely
     if (!Python.isStarted()) {
       Python.start(AndroidPlatform(this))
     }
