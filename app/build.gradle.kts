@@ -7,7 +7,7 @@ plugins {
   alias(libs.plugins.roborazzi)
   alias(libs.plugins.secrets)
   alias(libs.plugins.google.services)
-  id("com.chaquo.python") version "15.0.1"
+  id("com.chaquo.python") version "17.0.0"
 }
 
 android {
