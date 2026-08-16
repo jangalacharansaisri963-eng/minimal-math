@@ -119,7 +119,7 @@ class CalculatorViewModel : ViewModel() {
 }
 
 // ADD THIS: Screen is calling this sealed class
-sealed interface CalculatorAction {
+sealed class CalculatorAction {
     data object ToggleAngleMode : CalculatorAction()
     data object ToggleTerminal : CalculatorAction()
     data object ToggleUnitConverter : CalculatorAction()
