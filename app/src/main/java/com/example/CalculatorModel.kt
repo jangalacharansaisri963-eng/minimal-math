@@ -29,7 +29,7 @@ data class CalculatorState(
   val hasMemory: Boolean = false
 )
 
-sealed interface CalculatorAction {
+sealed class CalculatorAction {
   data class Number(val digit: Int) : CalculatorAction
   data object Decimal : CalculatorAction
   data class Operator(val op: CalculatorOp) : CalculatorAction
