@@ -119,16 +119,16 @@ class CalculatorViewModel : ViewModel() {
 }
 
 // ADD THIS: Screen is calling this sealed class
-sealed class CalculatorAction {
-    object ToggleAngleMode : CalculatorAction()
-    object ToggleTerminal : CalculatorAction()
-    object ToggleUnitConverter : CalculatorAction()
-    object ToggleHistory : CalculatorAction()
-    object ToggleExtraFunctions : CalculatorAction()
-    object ClearHistory : CalculatorAction()
-    object MemoryClear : CalculatorAction()
-    object MemoryAdd : CalculatorAction()
-    object MemorySubtract : CalculatorAction()
-    object MemoryRecall : CalculatorAction()
+sealed interface CalculatorAction {
+    data object ToggleAngleMode : CalculatorAction()
+    data object ToggleTerminal : CalculatorAction()
+    data object ToggleUnitConverter : CalculatorAction()
+    data object ToggleHistory : CalculatorAction()
+    data object ToggleExtraFunctions : CalculatorAction()
+    data object ClearHistory : CalculatorAction()
+    data object MemoryClear : CalculatorAction()
+    data object MemoryAdd : CalculatorAction()
+    data object MemorySubtract : CalculatorAction()
+    data object MemoryRecall : CalculatorAction()
     data class SelectHistory(val expr: String) : CalculatorAction()
 }
