@@ -31,7 +31,7 @@ android {
 
   sourceSets {
     getByName("main") {
-      python.srcDirs("src/main/assets/python")
+      // Standard Android source sets if needed
     }
   }
 
@@ -72,6 +72,16 @@ android {
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
+  }
+}
+
+chaquopy {
+  defaultConfig {
+    sourceSets {
+      getByName("main") {
+        srcDir("src/main/assets/python")
+      }
+    }
   }
 }
 
