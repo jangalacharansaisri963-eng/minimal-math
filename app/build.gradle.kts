@@ -74,7 +74,7 @@ chaquopy {
   defaultConfig {
     sourceSets {
       getByName("main") {
-        srcDir("src/main/assets/python")
+        srcDir("src/main/python")
       }
     }
   }
