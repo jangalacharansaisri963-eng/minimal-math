@@ -154,4 +154,59 @@ class CalculatorUnitTest {
     vm.onAction(CalculatorAction.MemoryClear)
     assertEquals(false, vm.state.value.hasMemory)
   }
+
+  @Test
+  fun testPythonRuntimeExecutionAndMathModules() {
+    val runtime = PythonRuntime()
+
+    // Test Arithmetic functions loaded directly from Python
+    val addRes = runtime.execute("add(25, 17)")
+    assertEquals("42", addRes.output)
+    assertEquals(false, addRes.isError)
+
+    val factRes = runtime.execute("factorial(6)")
+    assertEquals("720", factRes.output)
+
+    val gcdRes = runtime.execute("gcd(48, 18)")
+    assertEquals("6", gcdRes.output)
+
+    val lcmRes = runtime.execute("lcm(12, 15)")
+    assertEquals("60", lcmRes.output)
+
+    // Test Special Functions: Gamma Function Γ(5) = 4! = 24
+    val gamma5Res = runtime.execute("gamma(5)")
+    assertEquals("24", gamma5Res.output)
+
+    // Γ(1) = 1
+    val gamma1Res = runtime.execute("gamma(1)")
+    assertEquals("1", gamma1Res.output)
+
+    // Trigonometry from python
+    val sinRes = runtime.execute("sin(0)")
+    assertEquals("0", sinRes.output)
+
+    // Logarithms & Roots from python
+    val sqrtRes = runtime.execute("sqrt(144)")
+    assertEquals("12", sqrtRes.output)
+
+    // Custom user variables & custom def in REPL
+    runtime.execute("val = 50")
+    val evalVar = runtime.execute("val * 2 + 10")
+    assertEquals("110", evalVar.output)
+
+    val defCube = runtime.execute("def cube(x): return x ** 3")
+    assertEquals(false, defCube.isError)
+
+    val callCube = runtime.execute("cube(4)")
+    assertEquals("64", callCube.output)
+  }
+
+  @Test
+  fun testCalculatorEvaluatorGammaFunction() {
+    val res = CalculatorEvaluator.evaluate("gamma(5)").getOrThrow()
+    assertEquals("24", CalculatorFormatter.formatBigDecimal(res))
+
+    val resHalf = CalculatorEvaluator.evaluate("gamma(1)").getOrThrow()
+    assertEquals("1", CalculatorFormatter.formatBigDecimal(resHalf))
+  }
 }
