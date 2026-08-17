@@ -232,8 +232,38 @@ object CalculatorEvaluator {
         for (k in 2..n) res *= k
         res
       }
+      "gamma" -> calculateGamma(x)
       else -> throw IllegalArgumentException("Unknown function: $funcSymbol")
     }
+  }
+
+  private fun calculateGamma(z: Double): Double {
+    if (z <= 0 && z == Math.floor(z)) {
+      throw ArithmeticException("Gamma undefined for non-positive integers")
+    }
+    val pi = Math.PI
+    if (z < 0.5) {
+      return pi / (sin(pi * z) * calculateGamma(1.0 - z))
+    }
+    val adjustedZ = z - 1.0
+    val p = doubleArrayOf(
+      0.99999999999980993,
+      676.5203681218851,
+      -1259.1392167224028,
+      771.32342877765313,
+      -176.61502916214059,
+      12.507343278686905,
+      -0.13857109585320572,
+      9.9843695780195716e-6,
+      1.5056327351493116e-7
+    )
+    var x = p[0]
+    for (i in 1 until 9) {
+      x += p[i] / (adjustedZ + i)
+    }
+    val t = adjustedZ + 7.5
+    val sqrtTwoPi = 2.5066282746310005
+    return sqrtTwoPi * t.pow(adjustedZ + 0.5) * Math.exp(-t) * x
   }
 
   fun tokenize(expr: String): List<String> {
