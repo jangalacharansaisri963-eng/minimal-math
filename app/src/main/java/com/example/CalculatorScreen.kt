@@ -133,8 +133,8 @@ fun CalculatorScreen(
             ) {
               Icon(
                 imageVector = Icons.Default.Code,
-                contentDescription = "Python Terminal",
-                tint = if (state.isTerminalOpen) Color(0xFF58A6FF) else MaterialTheme.colorScheme.outline
+                contentDescription = "Math Terminal",
+                tint = if (state.isTerminalOpen) Color(0xFFA6E3A1) else MaterialTheme.colorScheme.outline
               )
             }
 
@@ -273,7 +273,11 @@ fun CalculatorScreen(
               },
               modifier = Modifier.size(38.dp).testTag("btn_terminal")
             ) {
-              Icon(imageVector = Icons.Default.Code, contentDescription = "Python Terminal", tint = MaterialTheme.colorScheme.outline)
+              Icon(
+                imageVector = Icons.Default.Code,
+                contentDescription = "Math Terminal",
+                tint = if (state.isTerminalOpen) Color(0xFFA6E3A1) else MaterialTheme.colorScheme.outline
+              )
             }
 
             IconButton(
@@ -398,13 +402,13 @@ fun CalculatorScreen(
         UnitConverterSheet(onClose = { viewModel.onAction(CalculatorAction.ToggleUnitConverter) })
       }
 
-      // Python Terminal Sheet
+      // Pure Kotlin Math Terminal Sheet
       AnimatedVisibility(
         visible = state.isTerminalOpen,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
       ) {
-        PythonTerminalSheet(onClose = { viewModel.onAction(CalculatorAction.ToggleTerminal) })
+        MathTerminalSheet(onClose = { viewModel.onAction(CalculatorAction.ToggleTerminal) })
       }
     }
   }
